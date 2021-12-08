@@ -2,3 +2,5 @@ django
 pylint-django
 autopep8
 mysqlclient
+keyring
+django-debug-toolbar
