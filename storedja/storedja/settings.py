@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import keyring
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2wa@07n&dey#)1n)^*4%a-%e0q#wxy5dc$2bcqgi(60vo3qt3a'
+SECRET_KEY = keyring.get_password('storedja', 'secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -75,8 +76,12 @@ WSGI_APPLICATION = 'storedja.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'storedja',
+        'PORT': '3306',
+        'HOST': 'localhost',
+        'USER': 'root',
+        'PASSWORD': keyring.get_password('database', 'root')
     }
 }
 

@@ -1,3 +1,4 @@
 django
 pylint-django
 autopep8
+mysqlclient
