@@ -22,7 +22,7 @@ def product_detail(request, id):
 
 @api_view()
 def collection_list(request):
-    queryset = Collection.objects.all()
+    queryset = Collection.objects.prefetch_related('products').all()
     serializer = CollectionSerializer(
         queryset, many=True)
     return Response(serializer.data)

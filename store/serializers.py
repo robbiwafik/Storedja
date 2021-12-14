@@ -1,23 +1,25 @@
 from re import MULTILINE
 from rest_framework import serializers
-from store.models import Collection
+from store.models import Collection, Product
 
 
-class CollectionSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    title = serializers.CharField(max_length=255)
-    products = serializers.SerializerMethodField()
+class CollectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Collection
+        fields = ['id', 'title', 'featured_product', 'products_count']
 
-    def get_products(self, collection: Collection):
+    products_count = serializers.SerializerMethodField()
+
+    def get_products_count(self, collection: Collection):
         return collection.products.count()
 
 
-class ProductSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    title = serializers.CharField(max_length=255)
-    unit_price = serializers.DecimalField(
-        max_digits=6, decimal_places=2, coerce_to_string=False)
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'title', 'unit_price', 'collection']
+
     collection = serializers.HyperlinkedRelatedField(
-        queryset=Collection.objects.all(),
-        view_name='collection-detail'
+        view_name='collection-detail',
+        queryset=Collection.objects.all()
     )
