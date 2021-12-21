@@ -1,5 +1,6 @@
+from django.db.models import fields
 from rest_framework import serializers
-from store.models import Collection, Product
+from store.models import Collection, Product, Review
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -23,3 +24,13 @@ class ProductSerializer(serializers.ModelSerializer):
         view_name='collection-detail',
         queryset=Collection.objects.all()
     )
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'name', 'description', 'date']
+
+    def create(self, validated_data):
+        product_id = self.context['product_id']
+        return Review.objects.create(product_id=product_id, **validated_data)

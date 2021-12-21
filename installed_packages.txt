@@ -5,3 +5,4 @@ mysqlclient
 keyring
 django-debug-toolbar
 django-rest-framework
+drf-nested-routers
