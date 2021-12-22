@@ -1,22 +1,23 @@
-from functools import partial
-from django.db.models.base import Model
 from django.shortcuts import render, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from store.filters import ProductFilter
+from .filters import ProductFilter
 from .models import Collection, Product, Review
+from .pagination import ProductPagination
 from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
 
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
+    pagination_class = ProductPagination
     search_fields = ['description', 'title', 'collection__title']
+    ordering_fields = ['unit_price', 'last_update']
 
     def destroy(self, request, pk):
         product = Product.objects.get(pk=pk)
