@@ -31,6 +31,9 @@ class Product(models.Model):
         Collection, on_delete=models.PROTECT, related_name='products')
     promotions = models.ManyToManyField(Promotion, blank=True)
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE = 'B'
@@ -87,6 +90,9 @@ class Address(models.Model):
 class Cart(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return str(self.id)
 
 
 class CartItem(models.Model):

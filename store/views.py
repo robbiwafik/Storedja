@@ -1,13 +1,15 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, mixins
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework import status
+from rest_framework.generics import CreateAPIView, RetrieveDestroyAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .filters import ProductFilter
-from .models import Collection, Product, Review
+from .models import Cart, CartItem, Collection, Product, Review
 from .pagination import ProductPagination
-from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
+from .serializers import CartItemSerializer, CartItemUpdateSerializer, CartSerializer, CollectionSerializer, ProductSerializer, ReviewSerializer
 
 
 class ProductViewSet(ModelViewSet):
@@ -50,3 +52,29 @@ class ReviewViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {'product_id': self.kwargs['product_pk']}
+
+
+class CartViewSet(mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin,
+                  mixins.DestroyModelMixin,
+                  GenericViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    lookup_field = 'pk'
+
+
+class CartItemViewSet(ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete']
+
+    def get_queryset(self):
+        return CartItem.objects.select_related('cart', 'product').filter(cart_id=self.kwargs['cart_pk'])
+
+    def get_serializer_class(self):
+        if self.request.method == 'PATCH':
+            return CartItemUpdateSerializer
+        return CartItemSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'cart_id': self.kwargs['cart_pk']})
+        return context
