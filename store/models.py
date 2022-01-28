@@ -1,5 +1,6 @@
 from uuid import uuid4
 from django.core.validators import MinValueValidator
+from django.conf import settings
 from django.db import models
 
 
@@ -53,6 +54,8 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     membership = models.CharField(
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
 class Order(models.Model):
