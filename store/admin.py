@@ -33,5 +33,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['id', 'first_name', 'last_name',
-                    'email', 'phone', 'birth_date', 'membership']
+                    'phone', 'birth_date', 'membership']
+    list_select_related = ['user']
+    autocomplete_fields = ['user']
     list_per_page = 10
