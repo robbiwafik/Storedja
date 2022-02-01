@@ -6,3 +6,5 @@ keyring
 django-debug-toolbar
 django-rest-framework
 drf-nested-routers
+djoser
+djangorestframework_simplejwt
